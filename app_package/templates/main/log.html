@@ -1,0 +1,44 @@
+{% extends "_layout.html" %}
+{% block title %} Log Habit {% endblock %}
+{% block main %}
+<form method="POST" id="form_log" enctype=multipart/form-data></form>
+
+<div class="space_for_navbar_and_footer">
+
+<div class="log_page flex_center">
+    <div class="log_page_sub std_framing">
+        <div class="habit-container">
+            <h2>Select Date:</h2>
+            <input type="date" name="date" class="form-control" value="{{ today_date }}" form="form_edit">
+            <hr>
+            <h2>Habits:</h2>
+            
+            <div class="habit">
+                <span>Read:</span>
+                <input type="checkbox" name="checkbox_read" form="form_log"/>
+            </div>
+        </div>
+
+        <div class="blog_form_buttons">
+
+            <div class="button_div_right">
+              <!-- <input type="submit" value="Log" class="btn btn-primary" form="form_log"> -->
+              <button type="submit" class="btn btn-primary" form="form_log">Log</button>
+            </div>
+    
+          </div><!-- blog_form_buttons -->
+
+
+    </div>
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+{% endblock %}

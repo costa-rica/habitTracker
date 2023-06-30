@@ -1,8 +1,9 @@
 from flask import Blueprint
-from flask import render_template
+from flask import render_template, request
 import os
 import logging
 from logging.handlers import RotatingFileHandler
+from datetime import datetime
 
 
 bp_main = Blueprint('bp_main', __name__)
@@ -28,3 +29,16 @@ def home():
     logger_bp_main.info(f"-- in home page route --")
 
     return render_template('main/home.html')
+
+
+@bp_main.route("/log", methods=["GET","POST"])
+def log():
+    logger_bp_main.info(f"-- in log page route --")
+
+    today_date = datetime.now().strftime("%Y-%m-%d")
+
+    if request.method == 'POST':
+        formDict = request.form.to_dict()
+        print("formDict: ", formDict)
+
+    return render_template('main/log.html', today_date = today_date)

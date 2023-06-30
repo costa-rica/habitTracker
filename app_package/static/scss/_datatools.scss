@@ -1,0 +1,76 @@
+/*Data Tools*/
+section.data_tools_main {
+
+    h1 {margin-bottom: 1em;}
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+        a {text-decoration: none;}
+    }
+
+    li {
+        margin: 0 0 3em 0;
+        border-radius: 2em;
+        padding: 1em;
+        width: 90%;
+    }
+
+    li:nth-child(odd) {
+        background-color: var(--bs-secondary);
+        a {
+            text-decoration: none;
+            color: black;
+            width: 100%;
+        }
+        a:hover { color: var(--bs-dark);}
+    }
+
+    li:nth-child(even) {
+        background-color: var(--bs-primary);
+    }
+
+    li:hover {
+        background-color: var(--bs-gray-500);
+        color: var(--bs-dark);
+        a {
+            color: var(--bs-dark);
+        }
+    }
+
+    .data_tool_title {
+        display: flex;
+    }
+
+    .title_div {
+        display: flex;
+    }
+
+    .title_div {
+        flex: 2;
+        align-items: center;
+    }
+
+    .logo_div {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        img {
+            max-width: 6rem;
+        }
+    }
+    #logo_div_km {
+        clip-path: inset(10% 0 10% 0 round 1rem);// <-- Good corping property
+        background-color: var(--bs-gray-400);
+    }
+}
+
+@media screen and (min-width: 768px) {
+    /*Data Tools*/
+section.data_tools_main {
+    .logo_div {
+        img {
+            max-width: 8rem;
+        }
+    }
+}
+}

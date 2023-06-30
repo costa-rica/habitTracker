@@ -85,7 +85,7 @@ def login():
                 if bcrypt.checkpw(password.encode(), user.password):
                     login_user(user)
 
-                    return redirect(url_for('bp_blog.blog_user_home'))
+                    return redirect(url_for('bp_main.log'))
                 else:
                     flash('Password or email incorrectly entered', 'warning')
             else:
@@ -104,7 +104,7 @@ def login():
 @bp_users.route('/register', methods = ['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('bp_main.user_home'))
+        return redirect(url_for('bp_main.log'))
     page_name = 'Register'
     if request.method == 'POST':
         formDict = request.form.to_dict()
