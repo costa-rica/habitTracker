@@ -28,7 +28,7 @@
 
     <div class="navbar_custom " id="nav_section">
       
-      <div class="nav_left">
+      <div class="nav_left navbar_custom_child">
 
         <a class="nav_left_a_href" href="{{ url_for('bp_main.home') }}">
         <img class="dash_and_data_logo" alt="API Tester PNG - small"
@@ -36,7 +36,8 @@
         </a>
 
       </div><!-- nav_left -->
-      <div class="nav_center">
+
+      <div class="nav_center navbar_custom_child">
  
         {% if current_user %}
         {{ current_user.username }}
@@ -44,7 +45,7 @@
       </div><!-- nav_center -->
 
 
-      <div class="nav_right">
+      <div class="nav_right navbar_custom_child">
         <img class="nav_menu" id="nav_menu" src="{{ url_for('static', filename='images/white-hamburger-menu-icon-24.png') }}"
         alt="Open Navigation">
 
@@ -56,14 +57,17 @@
             <ul class="" id="nav_horizontal_list">
             <br>
   
+            <li class=""><a class="nav-link" href="{{ url_for('bp_blog.index') }}">Blog</a></li>
             {% if current_user.id %}
-            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_users.logout') }}">Logout</a></li>
+            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_main.log') }}">Log</a></li>
             <li class="nav-item li_primary"><a class="nav-link" href="">Download</a></li>
+            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_users.logout') }}">Logout</a></li>
+            
             {% endif %}<!-- if current_user.id -->
             {% if not current_user.is_authenticated %}
             <li class=""><a class="fit_text" href="{{ url_for('bp_users.login') }}">Login</a></li>
             {% endif %}
-            <li class=""><a class="nav-link" href="{{ url_for('bp_blog.index') }}">Blog</a></li>
+            
 
             {% if current_user.admin %}
             <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_admin.admin_page') }}">Admin Page</a></li>
@@ -71,7 +75,7 @@
 
           </ul>
           </nav>
-      </div>
+      </div><!-- nav_right -->
 
     </div><!-- navbar_custom-->
 </div><!-- navbar_super -->

@@ -10923,9 +10923,15 @@ textarea.form-control-lg {
     /* END OLD Navbar */
   }
   .navbar_super .navbar_custom {
-    justify-content: center;
+    justify-content: space-between;
     height: fit-content;
     /* OLD Nav bar */
+  }
+  .navbar_super .navbar_custom .navbar_custom_child {
+    width: 30%;
+  }
+  .navbar_super .navbar_custom .nav_center {
+    font-size: x-large;
   }
   .navbar_super .navbar_custom .nav_left {
     width: 12rem;
@@ -10937,9 +10943,6 @@ textarea.form-control-lg {
     min-width: auto;
     height: 7rem;
     padding: 0.25rem 2rem;
-  }
-  .navbar_super .navbar_custom .nav_right {
-    width: 100%;
   }
   .navbar_super .navbar_custom .nav_right .nav_exit_div,
   .navbar_super .navbar_custom .nav_right .nav_menu {
