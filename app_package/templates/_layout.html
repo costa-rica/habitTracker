@@ -9,6 +9,7 @@
 
 <!-- Datatable -->
 <script src="../static/DataTables/jQuery-3.6.0/jquery-3.6.0.min.js"></script>
+
 <link rel="stylesheet" type="text/css" href="../static/DataTables/DataTables-1.13.4/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="../static/customAndOldFiles/css/responsive.dataTables.min.css">
 <!-- <script src="../static/customAndOldFiles/js/moment.min.js"></script> -->
@@ -57,21 +58,19 @@
             <ul class="" id="nav_horizontal_list">
             <br>
   
-            <li class=""><a class="nav-link" href="{{ url_for('bp_blog.index') }}">Blog</a></li>
+            <!-- <li class=""><a class="nav-link" href="{{ url_for('bp_blog.index') }}">Blog</a></li> -->
             {% if current_user.id %}
             <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_main.log') }}">Log</a></li>
-            <li class="nav-item li_primary"><a class="nav-link" href="">Download</a></li>
+            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_main.user_habits') }}">Habits</a></li>
+            <!-- <li class="nav-item li_primary"><a class="nav-link" href="">Download</a></li> -->
             <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_users.logout') }}">Logout</a></li>
             
             {% endif %}<!-- if current_user.id -->
             {% if not current_user.is_authenticated %}
             <li class=""><a class="fit_text" href="{{ url_for('bp_users.login') }}">Login</a></li>
+
             {% endif %}
             
-
-            {% if current_user.admin %}
-            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_admin.admin_page') }}">Admin Page</a></li>
-            {% endif %}<!-- if current_user.admin -->
 
           </ul>
           </nav>

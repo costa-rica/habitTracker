@@ -1,0 +1,20 @@
+/* Delete Modal */
+.delete_post_modal{
+    .modal-body{
+        display: flex;
+        // flex-wrap: wrap;
+        justify-content: center;
+        font-size: x-large;
+        // width:100%;
+    }
+    .habit_tuple_input{
+        display:none;
+      }
+
+      .button_div_right {
+        display:flex;
+        justify-content: end;
+        padding: 0 1rem 0 0;
+    }
+    
+}

@@ -3,7 +3,8 @@
 @use "users";
 @use "admin";
 @use "blog";
-@use "datatools";
+// @use "datatools";
+@use "modals";
 
 :root {
   --nav-height: 123px;
@@ -239,6 +240,7 @@ body {
 .log_page{
   // width: 95%;
   // padding: 3rem 0 0 0;
+  gap: 1rem;
 
   .log_page_sub{
     // border-radius: 1.5em;
@@ -249,12 +251,45 @@ body {
     // display:flex;
     // justify-content: center;
   }
+  .habits_list{
+    list-style: none;
+  }
 
   .button_div_right {
     display:flex;
     justify-content: end;
     padding: 0 5rem 0 0;
 }
+  .log_page_sub_table{
+    // display: flex;
+    // justify-content: center;
+    width: calc(100% - .5rem);
+    font-size: 1.5em;
+    
+  }
+  .search_and_table_super{
+    width:100%;
+    max-width: 50rem;
+    // width: calc(100% - .5rem);
+    // background-color: gold;
+  }
+  .search-container{width:100%;}
+  .search-container{
+    // width:100%;
+  }
+  .table_custom{
+    // background-color: #20C997;
+    width:100%;
+    
+    tr{
+      // width: 100%;
+      display: flex;justify-content: space-between;}
+    .heading_row{ 
+      // padding:.2rem 1rem;
+      border-bottom: 2px solid #000000;
+    }
+    // td{ padding: .1rem 1rem;}
+  }
 }
 
 

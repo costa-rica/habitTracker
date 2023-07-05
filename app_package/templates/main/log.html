@@ -5,17 +5,28 @@
 
 <div class="space_for_navbar_and_footer">
 
-<div class="log_page flex_center">
+<div class="log_page flex_center and_wrap">
     <div class="log_page_sub std_framing">
         <div class="habit-container">
             <h2>Select Date:</h2>
-            <input type="date" name="date" class="form-control" value="{{ today_date }}" form="form_edit">
+            <input type="date" id="date_selector" name="date" class="form-control" value="{{ today_date }}" form="form_log">
             <hr>
             <h2>Habits:</h2>
             
             <div class="habit">
-                <span>Read:</span>
-                <input type="checkbox" name="checkbox_read" form="form_log"/>
+
+                <ul id="habits-list" class="habits_list">
+                    {% for habit in user_habits_list %}
+                        <li>
+                            
+                            <span>{{ habit.1 }} :</span>
+                            <input type="checkbox" id="checkbox_{{ habit.0 }}" name="checkbox_{{ habit.0 }}" form="form_log"/>
+
+                        </li>
+                    {% endfor %}
+                </ul>
+                <!-- <span>Read:</span>
+                <input type="checkbox" name="checkbox_read" form="form_log"/> -->
             </div>
         </div>
 
@@ -23,22 +34,122 @@
 
             <div class="button_div_right">
               <!-- <input type="submit" value="Log" class="btn btn-primary" form="form_log"> -->
-              <button type="submit" class="btn btn-primary" form="form_log">Log</button>
+              <button type="submit" class="btn btn-primary" form="form_log">Update Log</button>
+            </div>
+            <div class="button_div_right">
+              <!-- <input type="submit" value="Log" class="btn btn-primary" form="form_log"> -->
+              <button type="submit" class="btn btn-secondary" form="form_log">Download History CSV</button>
             </div>
     
           </div><!-- blog_form_buttons -->
 
 
-    </div>
+    </div><!-- log_page_sub std_framing -->
+
+
+    <div class="log_page_sub_table std_framing flex_center">
+
+        <div class=" search_and_table_super ">
+            <div class="search-container flex_center">
+                <input type="text" id="myInput" onkeyup="searchTable()" placeholder="Search your habits">
+              </div><!-- search-container -->
+    
+              <div class="table_and_search_div">
+    
+                <!-- The blow code will work fine if you uncomment -->
+                <!-- <div class="search-container">
+                  <input type="text" id="myInput" onkeyup="searchTable()" placeholder="Search for names...">
+                </div> -->
+                <table id="searchableTable01" class="responsive-table table_custom">
+                  <thead>
+                    <tr class="heading_row">
+      
+                      {% for col in column_names %}
+                      <th>{{ col }}</th>
+                      {% endfor %}
+                      
+      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in user_habit_days %}
+                    <tr>
+      
+                      <td>{{ row.1 }}</td>
+                      <td>{{ row.2 }}</td>
+    
+                      <td>
+    
+                        <button type="submit" name="leave" value="{{ row.0 }}" class="btn btn-warning btn_custom01"
+                          form="form_rincon_membership">Leave</button>
+    
+      
+                      </td>
+      
+      
+                    </tr>
+                    {% endfor %}
+      
+                  </tbody>
+                </table>
+              </div><!-- table_and_search_div -->
+
+        </div><!-- search_and_table_super -->
+
+
+
+
+    </div><!-- log_page_sub_table std_framing -->
+
+
+</div><!-- log_page flex_center -->
+
+
+
+
 
 </div>
 
+<script src="../static/customAndOldFiles/searchTable01.js"></script>
 
-
-
-
-</div>
-
+<script>
+    window.onload = function() {
+        // When the page first loads
+        checkHabits();
+    
+        // When the date_selector value changes
+        document.getElementById('date_selector').addEventListener('change', function() {
+            checkHabits();
+        });
+    }
+    
+    function checkHabits() {
+        // Get the selected date
+        var selectedDate = new Date(document.getElementById('date_selector').value);
+        
+        // The selected date as a string in the format: YYYY-MM-DD
+        var selectedDateString = selectedDate.toISOString().split('T')[0];
+    
+        // Jinja2 variable user_habit_days should be rendered in this script
+        var user_habit_days = {{ user_habit_days|tojson }};
+        
+        // Loop through each item in the user_habit_days list
+        for (var i = 0; i < user_habit_days.length; i++) {
+            // Get the date from the tuple and convert it to a string in the format: YYYY-MM-DD
+            var habitDate = new Date(user_habit_days[i][2]).toISOString().split('T')[0];
+    
+            // Check if the selected date matches the habit date
+            if (selectedDateString === habitDate) {
+                // Check the corresponding checkbox
+                document.getElementById('checkbox_' + user_habit_days[i][0]).checked = true;
+            } else {
+                // Uncheck the corresponding checkbox
+                document.getElementById('checkbox_' + user_habit_days[i][0]).checked = false;
+            }
+        }
+    }
+    </script>
+    
 
 
 {% endblock %}

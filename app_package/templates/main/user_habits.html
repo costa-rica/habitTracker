@@ -1,0 +1,83 @@
+{% extends "_layout.html" %}
+{% block title %} Admin Habit {% endblock %}
+{% block main %}
+<form method="POST" id="form_habit_new" enctype=multipart/form-data></form>
+<form method="POST" id="form_habit_delete" enctype=multipart/form-data></form>
+<div class="space_for_navbar_and_footer">
+    <div class="admin_page" >
+        <div class="container">
+    
+            <!-- <form method="POST" action="" enctype="multipart/form-data"> -->
+
+
+                <h1>My Habits</h1>
+                <ul id="habits-list" class="habits_list">
+                    {% for habit in user_habits_list %}
+                        <li class="habit_list_item">{{ habit.1 }} <button type="button" class="form-control custom_delete_btn habit-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal" data-habit-id="{{ habit[0] }}" data-habit-name="{{ habit[1] }}" >&#215;
+                          </button>
+
+                            <!-- <a class="remove-image"
+                            href="{ url_for('bp_admin.delete_habit', id = habit.0 ) }"
+                            style="display: inline;">&#215;</a> -->
+
+
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button id="add-habit-button">Add new habit</button>
+        
+                <div id="new-habit-form" class="hidden">
+                    <input id="new-habit-input" placeholder="New habit" name="new_habit" form="form_habit_new"
+                        list="habits_list">
+                        <datalist id="habits_list">
+                            {% for habit in non_user_habits %}
+
+                            <option value = "{{ habit }}">{{ habit }}</option>
+                            
+                            {% endfor %}
+                        </datalist>
+                    <button id="submit-habit-button" form="form_habit_new">Submit</button>
+                </div>
+        
+
+
+
+                <script>
+                    var addButton = document.getElementById('add-habit-button');
+                    var newHabitForm = document.getElementById('new-habit-form');
+                    var submitButton = document.getElementById('submit-habit-button');
+        
+                    addButton.addEventListener('click', function() {
+                        newHabitForm.classList.remove('hidden');
+                    });
+        
+                </script>
+            
+            <!-- </form> -->
+    
+        </div>
+      </div>
+</div>
+
+<form method="POST" id="form_modal_delete"></form>
+<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+    {% include "modals/delete-areYouSure.html" %}
+  </div>
+
+<script>
+$('.habit-button').click(function() {
+    // var habit = $(this).data('habit');
+    var habitId = $(this).data('habit-id');
+    var habitName = $(this).data('habit-name');
+    $('#habitModalBody').text( habitName);
+    $('#habit_id').val(habitId);
+    $('#habit_name').val(habitName);
+    // $('#modal-title').text("Yes, delete " + habitName);
+    $('#deleteModal').modal('show');
+});
+</script>
+    
+{% endblock %}
+
