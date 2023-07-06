@@ -254,7 +254,7 @@ def admin_db_upload():
 
     metadata = Base_users.metadata
     db_table_list = [table for table in metadata.tables.keys()]
-    csv_dir_path_upload = os.path.join(current_app.config.get('DB_ROOT'), 'db_upload')
+    dir_path_upload = os.path.join(current_app.config.get('DB_ROOT'), 'db_upload')
 
     if request.method == "POST":
         formDict = request.form.to_dict()
@@ -263,27 +263,25 @@ def admin_db_upload():
 
         requestFiles = request.files
 
-        # print("requestFiles: ", requestFiles)
-
         # craete folder to store upload files
         if not os.path.exists(os.path.join(current_app.config.get('DB_ROOT'),"db_upload")):
             os.makedirs(os.path.join(current_app.config.get('DB_ROOT'),"db_upload"))
         
 
-        csv_file_for_table = request.files.get('csv_table_upload')
-        csv_file_for_table_filename = csv_file_for_table.filename
+        file_for_table = request.files.get('table_file_upload')
+        file_for_table_filename = file_for_table.filename
 
-        logger_bp_admin.info(f"-- Get CSV file name --")
-        logger_bp_admin.info(f"--  {csv_file_for_table_filename} --")
+        logger_bp_admin.info(f"-- Get table file name --")
+        logger_bp_admin.info(f"--  {file_for_table_filename} --")
 
         ## save to static rincon directory
-        path_to_uploaded_csv = os.path.join(csv_dir_path_upload,csv_file_for_table_filename)
-        csv_file_for_table.save(path_to_uploaded_csv)
+        path_to_uploaded = os.path.join(dir_path_upload,file_for_table_filename)
+        file_for_table.save(path_to_uploaded)
 
         print(f"-- table to go to: { formDict.get('existing_db_table_to_update')}")
 
         return redirect(url_for('bp_admin.upload_table', table_name = formDict.get('existing_db_table_to_update'),
-            path_to_uploaded_csv=path_to_uploaded_csv))
+            path_to_uploaded=path_to_uploaded))
 
 
     return render_template('admin/admin_db_upload.html', db_table_list=db_table_list)
@@ -294,7 +292,7 @@ def admin_db_upload():
 def upload_table(table_name):
     logger_bp_admin.info('- in upload_table -')
     logger_bp_admin.info(f"current_user.admin: {current_user.admin}")
-    path_to_uploaded_csv = request.args.get('path_to_uploaded_csv')
+    path_to_uploaded = request.args.get('path_to_uploaded')
 
     if not current_user.admin:
         return redirect(url_for('bp_main.home'))
@@ -304,15 +302,19 @@ def upload_table(table_name):
     existing_table_column_names = metadata.tables[table_name].columns.keys()
 
     # Get column names from the uploaded csv
-    df = pd.read_csv(path_to_uploaded_csv)
+    try:
+        df = pd.read_csv(path_to_uploaded)
+    except UnicodeDecodeError:
+        df = pd.read_pickle(path_to_uploaded)
 
     if 'time_stamp_utc' in df.columns:
         try:
             df['time_stamp_utc'] = pd.to_datetime(df['time_stamp_utc'], format='%d/%m/%Y %H:%M')
-        # except ValueError:
-        #     df['time_stamp_utc'] = pd.to_datetime(df['time_stamp_utc'], format='%d/%m/%Y %H:%M:%S')
-        except:
-            df = pd.read_csv(path_to_uploaded_csv, parse_dates=['time_stamp_utc'])
+        except ValueError:
+            try:
+                df = pd.read_csv(path_to_uploaded, parse_dates=['time_stamp_utc'])
+            except:
+                df = pd.read_pickle(path_to_uploaded)
 
 
     
