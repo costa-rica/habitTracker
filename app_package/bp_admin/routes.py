@@ -49,6 +49,8 @@ salt = bcrypt.gensalt()
 
 bp_admin = Blueprint('bp_admin', __name__)
 sess_users = dict_sess['sess_users']
+engine_users = dict_engine['engine_users']
+Base_users = dict_base['Base_users']
 
 @bp_admin.before_request
 def before_request():
@@ -64,41 +66,41 @@ def before_request():
 
 #### Replaced by user_habits page #####
 
-# @bp_admin.route('/admin_page', methods = ['GET', 'POST'])
-# @login_required
-# def admin_page():
-#     logger_bp_admin.info(f"-- admin_page route --")
-#     users_list=[i.email for i in sess_users.query(Users).all()]
-#     habits_list=[(i.id, i.habit_name) for i in sess_users.query(Habits).all()]
+@bp_admin.route('/admin_page', methods = ['GET', 'POST'])
+@login_required
+def admin_page():
+    logger_bp_admin.info(f"-- admin_page route --")
+    # users_list=[i.email for i in sess_users.query(Users).all()]
+    # habits_list=[(i.id, i.habit_name) for i in sess_users.query(Habits).all()]
     
-#     # with open(os.path.join(current_app.config['DIR_DB_FILES_UTILITY'],'added_users.txt')) as json_file:
-#     #     get_users_dict=json.load(json_file)
-#     #     json_file.close()
-#     # get_users_list=list(get_users.keys())
-#     if request.method == 'POST':
-#         formDict = request.form.to_dict()
-#         print('formDict:::', formDict)
-#         if formDict.get('new_habit'):
-#             logger_bp_admin.info(f"-- new_habit detected --")
-#             habit_name = formDict.get('new_habit')
-#             new_habit = Habits(habit_name=formDict.get('new_habit'))
-#             sess_users.add(new_habit)
-#             sess_users.commit()
-#             flash(f'{habit_name} has been added!', 'success')
-#         if formDict.get('btn_delete_habit'):
-#             logger_bp_admin.info(f"-- delete_habit detected --")
-#             habit_id  = formDict.get('habit_id')
-#             habit_name = formDict.get('habit_name')
-#             habit_name = sess_users.query(Habits).filter_by(id=habit_id).first().habit_name
-#             sess_users.query(Habits).filter_by(id=habit_id).delete()
-#             sess_users.query(UserHabitDays).filter_by(habit_id= habit_id).delete()
-#             sess_users.commit()
+    # with open(os.path.join(current_app.config['DIR_DB_FILES_UTILITY'],'added_users.txt')) as json_file:
+    #     get_users_dict=json.load(json_file)
+    #     json_file.close()
+    # get_users_list=list(get_users.keys())
+    # if request.method == 'POST':
+    #     formDict = request.form.to_dict()
+    #     print('formDict:::', formDict)
+    #     if formDict.get('new_habit'):
+    #         logger_bp_admin.info(f"-- new_habit detected --")
+    #         habit_name = formDict.get('new_habit')
+    #         new_habit = Habits(habit_name=formDict.get('new_habit'))
+    #         sess_users.add(new_habit)
+    #         sess_users.commit()
+    #         flash(f'{habit_name} has been added!', 'success')
+    #     if formDict.get('btn_delete_habit'):
+    #         logger_bp_admin.info(f"-- delete_habit detected --")
+    #         habit_id  = formDict.get('habit_id')
+    #         habit_name = formDict.get('habit_name')
+    #         habit_name = sess_users.query(Habits).filter_by(id=habit_id).first().habit_name
+    #         sess_users.query(Habits).filter_by(id=habit_id).delete()
+    #         sess_users.query(UserHabitDays).filter_by(habit_id= habit_id).delete()
+    #         sess_users.commit()
 
 
-#             flash(f'{habit_name} has been deleted!', 'success')
-#         return redirect(request.url)
-#     return render_template('admin/admin_habits.html', habits_list=habits_list)
-#     # return render_template('admin/admin.html', users_list=get_users_dict)
+    #         flash(f'{habit_name} has been deleted!', 'success')
+    #     return redirect(request.url)
+    return render_template('admin/admin.html')
+    # return render_template('admin/admin.html', users_list=get_users_dict)
 
 
 
@@ -200,161 +202,263 @@ def database_page():
     return render_template('admin/database_page.html', legend=legend, tableNamesList=tableNamesList)
 
 
-
-@bp_admin.route("/download_db_workbook", methods=["GET","POST"])
+@bp_admin.route('/admin_db_download', methods = ['GET', 'POST'])
 @login_required
-def download_db_workbook():
-    # workbook_name=request.args.get('workbook_name')
-    workbook_name = os.listdir(current_app.config['DIR_DB_FILES_DATABASE'])[0]
-    print('file:::', os.path.join(current_app.root_path, 'static','files_database'),workbook_name)
-    file_path = r'D:\OneDrive\Documents\professional\20210610kmDashboard2.0\fileShareApp\static\files_database\\'
-    
-    return send_from_directory(os.path.join(current_app.config['DIR_DB_FILES_DATABASE']),workbook_name, as_attachment=True)
+def admin_db_download():
+    logger_bp_admin.info('- in admin_db_download -')
+    logger_bp_admin.info(f"current_user.admin: {current_user.admin}")
 
+    if not current_user.admin:
+        return redirect(url_for('main.rincons'))
 
-@bp_admin.route('/database_upload', methods=["GET","POST"])
-@login_required
-def database_upload():
-    logger_bp_admin.info("- in database_upload route")
-    file_type=request.args.get('file_type')
-    if file_type=='excel':
-        tableNamesList=json.loads(request.args['tableNamesList'])
-        sheetNames=json.loads(request.args['sheetNames'])
-    uploadFileName=request.args.get('uploadFileName')
-    legend='Upload Data File to Database'
-    # uploadFlag=True
-    limit_upload_flag='checked'
-    
-    if request.method == 'POST':
-        
+    metadata = Base_users.metadata
+    db_table_list = [table for table in metadata.tables.keys()]
+
+    # csv_dir_path = os.path.join(current_app.config.get('DB_ROOT'), 'db_backup')
+    csv_dir_path = os.path.join(current_app.config.get('DIR_DB_BACKUP'))
+
+    if request.method == "POST":
         formDict = request.form.to_dict()
-        # print('formDict::::', formDict)
-        if formDict.get('appendExcel'):
-            
-            uploaded_file=os.path.join(current_app.config['DIR_DB_FILES_TEMPORARY'], uploadFileName)
-            # print('uploaded_file::::',uploaded_file)
-            if file_type=='excel':
-                logger_bp_admin.info("- in file_type=='excel'")
-                sheet_upload_status = []
-                for sheet in sheetNames:
-                    logger_bp_admin.info(f"- in sheet: {sheet}")
-                    sheetUpload=pd.read_excel(uploaded_file,engine='openpyxl',sheet_name=sheet)
-                    if sheet=='user':
-                        existing_emails=[i[0] for i in sess_users.query(Users.email).all()]
-                        sheetUpload=pd.read_excel(uploaded_file,engine='openpyxl',sheet_name='user')
-                        sheetUpload=sheetUpload[~sheetUpload['email'].isin(existing_emails)]
+        # print(f"- search_rincons POST -")
+        # print("formDict: ", formDict)
 
-                    elif formDict.get(sheet) in ['investigations','recalls']:
-                        sheetUpload['date_updated']=datetime.now()
-                        if formDict.get(sheet) =='recalls':
-                            sheetUpload=fix_recalls_wb_util(sheetUpload,uploadFileName)
-                        elif formDict.get(sheet) =='investigations':
-                            sheetUpload=fix_investigations_wb_util(sheetUpload)
-
-                    try:
-                        if sheet == 'user':
-                            sheetUpload.to_sql('users',con=engine, if_exists='append', index=False)
-                        elif sheet == 'recalls':
-                            sheetUpload["CONSEQUENCE_DEFECT"] = sheetUpload["CONSEQUENCE_DEFCT"]
-                            sheetUpload.drop(['CONSEQUENCE_DEFCT'], axis=1, inplace = True)
-                            sheetUpload.to_sql(formDict.get(sheet),con=engine, if_exists='append', index=False)
-                        else:
-                            sheetUpload.to_sql(formDict.get(sheet),con=engine, if_exists='append', index=False)
-                    
-                        # df_update.to_sql(table_name, con=engine, if_exists='append', index=False)
-                        # print('upload SUCCESS!: ', sheet)
-                        logger_bp_admin.info(f"upload SUCCESS!:: {sheet}")
-                        sheet_upload_status.append(f"{sheet}: success")
-                    except IndexError:
-                        logger_bp_admin.info(f"except IndexError:: {IndexError}")
-                        # return redirect(url_for('bp_admin.database_page',legend=legend,
-                        #     tableNamesList=tableNamesList, sheetNames=sheetNames))
-                        sheet_upload_status.append(f"{sheet}: fail")
-                    except:
-                        logger_bp_admin.info(f"except another error:: {sheet}")
-                        # os.remove(os.path.join(current_app.config['DIR_DB_FILES_TEMPORARY'], uploadFileName))
-                        sheet_upload_status.append(f"{sheet}: fail")
-
-                        # flash(f"""Problem uploading {sheet} table. Check for 1)uniquness with id or RECORD_ID 2)date columns
-                        #     are in a date format in excel.""", 'warning')
-                        # return redirect(url_for('bp_admin.database_page',legend=legend,
-                        #     tableNamesList=tableNamesList, sheetNames=sheetNames))
-                    #clear files_temp folder
-                for file in os.listdir(current_app.config['DIR_DB_FILES_TEMPORARY']):
-                    os.remove(os.path.join(current_app.config['DIR_DB_FILES_TEMPORARY'], file))
-                status_message =""
-                for sheet_message in sheet_upload_status:
-                    status_message = status_message +sheet_message + ",\n"
-                flash(f'Table sheet status: {status_message}', 'info')
-                return redirect(url_for('bp_admin.database_page',legend=legend,
-                    tableNamesList=tableNamesList, sheetNames=sheetNames))
-
-                
-            elif file_type=='text':
-                zipfile.ZipFile(uploaded_file).extractall(path=current_app.config['DIR_DB_FILES_TEMPORARY'])
-                
-                
-                text_file_name=[x for x in os.listdir(current_app.config['DIR_DB_FILES_TEMPORARY']) if x[-4:]=='.txt'][0]
-                limit_upload_flag=formDict.get('limit_upload_flag')
-                
-                flash_message=load_database_util(text_file_name, limit_upload_flag)
-                
-                
-                
-                for file in os.listdir(current_app.config['DIR_DB_FILES_TEMPORARY']):
-                    os.remove(os.path.join(current_app.config['DIR_DB_FILES_TEMPORARY'], file))
-
-                    
-                flash(flash_message[0], flash_message[1])
-
-                return redirect(url_for('bp_admin.database_page',legend=legend))
-
-    
-    if file_type=='excel':
-        return render_template('admin/database_upload.html',legend=legend,tableNamesList=tableNamesList,
-                    sheetNames=sheetNames, uploadFileName=uploadFileName,
-                    # uploadFlag=uploadFlag,
-                    file_type=file_type)
-    else:
-        return render_template('admin/database_upload.html',legend=legend,
-                    uploadFileName=uploadFileName,
-                    # uploadFlag=uploadFlag,
-                    file_type=file_type,limit_upload_flag=limit_upload_flag)
+        # # craete folder to save
+        # if not os.path.exists(os.path.join(os.environ.get('DIR_DB_BACKUP'),"db_backup")):
+        #     os.makedirs(os.path.join(os.environ.get('DIR_DB_BACKUP'),"db_backup"))
 
 
+        db_table_list = []
+        for key, value in formDict.items():
+            if value == "db_table":
+                db_table_list.append(key)
+      
+        db_tables_dict = {}
+        for table_name in db_table_list:
+            base_query = sess_users.query(metadata.tables[table_name])
+            df = pd.read_sql(text(str(base_query)), engine_users.connect())
 
-# @bp_admin.route("/delete_habit/<id>", methods=["GET","POST"])
-# @login_required
-# def delete_habit(id):
-#     logger_bp_admin.info(f"-- delete_habit route, id: {id} --")
-#     habit_name = sess_users.query(Habits).filter_by(id=id).first().habit_name
-#     sess_users.query(Habits).filter_by(id=id).delete()
-#     sess_users.query(UserHabitDays).filter_by(habits_table_id= id).delete()
-#     sess_users.commit()
+            # fix table names
+            cols = list(df.columns)
+            for col in cols:
+                if col[:len(table_name)] == table_name:
+                    df = df.rename(columns=({col: col[len(table_name)+1:]}))
 
-#     flash(f'{habit_name} has been deleted!', 'success')
-#     return redirect(request.referrer)
+            # Users table convert password from bytes to strings
+            if table_name == 'users':
+                df['password'] = df['password'].str.decode("utf-8")
 
-@bp_admin.route("/delete_user/<email>", methods=["GET","POST"])
-@login_required
-def delete_user(email):
-    print('did we get here????', email)
-    with open(os.path.join(current_app.config['DIR_DB_FILES_UTILITY'],'added_users.txt')) as json_file:
-        get_users_dict=json.load(json_file)
-        json_file.close()
-    
-    del get_users_dict[email]
-    
-    added_users_file=os.path.join(current_app.config['DIR_DB_FILES_UTILITY'], 'added_users.txt')
-    with open(added_users_file, 'w') as json_file:
-        json.dump(get_users_dict, json_file)
+
+            db_tables_dict[table_name] = df
+            db_tables_dict[table_name].to_csv(os.path.join(current_app.config.get('DIR_DB_BACKUP'), f"{table_name}.csv"), index=False)
         
-    if len(sess.query(User).filter_by(email=email).all())>0:
-        sess_users.query(User).filter_by(email=email).delete()
-        sess_users.commit()
+        shutil.make_archive(csv_dir_path, 'zip', csv_dir_path)
+
+        return redirect(url_for('bp_admin.download_db_tables_as_csv'))
     
+    return render_template('admin/admin_db_download.html', db_table_list=db_table_list )
+
+@bp_admin.route("/download_db_tables_as_csv", methods=["GET","POST"])
+@login_required
+def download_db_tables_as_csv():
+    return send_from_directory(os.path.join(current_app.config['DB_ROOT']),'db_backup.zip', as_attachment=True)
+
+
+# @bp_admin.route("/download_db_workbook", methods=["GET","POST"])
+# @login_required
+# def download_db_workbook():
+#     # workbook_name=request.args.get('workbook_name')
+#     workbook_name = os.listdir(current_app.config['DIR_DB_FILES_DATABASE'])[0]
+#     print('file:::', os.path.join(current_app.root_path, 'static','files_database'),workbook_name)
+#     file_path = r'D:\OneDrive\Documents\professional\20210610kmDashboard2.0\fileShareApp\static\files_database\\'
     
+#     return send_from_directory(os.path.join(current_app.config['DIR_DB_FILES_DATABASE']),workbook_name, as_attachment=True)
+
+
+@bp_admin.route('/admin_db_upload', methods = ['GET', 'POST'])
+@login_required
+def admin_db_upload():
+    logger_bp_admin.info('- in admin_db_upload -')
+    logger_bp_admin.info(f"current_user.admin: {current_user.admin}")
+
+    if not current_user.admin:
+        return redirect(url_for('bp_main.home'))
+
+    metadata = Base_users.metadata
+    db_table_list = [table for table in metadata.tables.keys()]
+    csv_dir_path_upload = os.path.join(current_app.config.get('DB_ROOT'), 'db_upload')
+
+    if request.method == "POST":
+        formDict = request.form.to_dict()
+        # print(f"- search_rincons POST -")
+        # print("formDict: ", formDict)
+
+        requestFiles = request.files
+
+        # print("requestFiles: ", requestFiles)
+
+        # craete folder to store upload files
+        if not os.path.exists(os.path.join(os.environ.get('DB_ROOT'),"db_upload")):
+            os.makedirs(os.path.join(os.environ.get('DB_ROOT'),"db_upload"))
+        
+
+        csv_file_for_table = request.files.get('csv_table_upload')
+        csv_file_for_table_filename = csv_file_for_table.filename
+
+        logger_bp_admin.info(f"-- Get CSV file name --")
+        logger_bp_admin.info(f"--  {csv_file_for_table_filename} --")
+
+        ## save to static rincon directory
+        path_to_uploaded_csv = os.path.join(csv_dir_path_upload,csv_file_for_table_filename)
+        csv_file_for_table.save(path_to_uploaded_csv)
+
+        print(f"-- table to go to: { formDict.get('existing_db_table_to_update')}")
+
+        return redirect(url_for('bp_admin.upload_table', table_name = formDict.get('existing_db_table_to_update'),
+            path_to_uploaded_csv=path_to_uploaded_csv))
+
+
+    return render_template('admin/admin_db_upload.html', db_table_list=db_table_list)
+
+
+@bp_admin.route('/upload_table/<table_name>', methods = ['GET', 'POST'])
+@login_required
+def upload_table(table_name):
+    logger_bp_admin.info('- in upload_table -')
+    logger_bp_admin.info(f"current_user.admin: {current_user.admin}")
+    path_to_uploaded_csv = request.args.get('path_to_uploaded_csv')
+
+    if not current_user.admin:
+        return redirect(url_for('bp_main.home'))
+
+    # Get Table Column names from the database corresponding to the running webiste/app
+    metadata = Base_users.metadata
+    existing_table_column_names = metadata.tables[table_name].columns.keys()
+
+    # Get column names from the uploaded csv
+    df = pd.read_csv(path_to_uploaded_csv)
+
+    if 'time_stamp_utc' in df.columns:
+        try:
+            df['time_stamp_utc'] = pd.to_datetime(df['time_stamp_utc'], format='%d/%m/%Y %H:%M')
+        # except ValueError:
+        #     df['time_stamp_utc'] = pd.to_datetime(df['time_stamp_utc'], format='%d/%m/%Y %H:%M:%S')
+        except:
+            df = pd.read_csv(path_to_uploaded_csv, parse_dates=['time_stamp_utc'])
+
+
     
-    flash(f'{email} has been deleted!', 'success')
-    return redirect(url_for('users.admin'))
+
+    replacement_data_col_names = list(df.columns)
+
+    # Match column names between the two tables
+    match_cols_dict = {}
+    for existing_db_column in existing_table_column_names:
+        try:
+            index = replacement_data_col_names.index(existing_db_column)
+            match_cols_dict[existing_db_column] = replacement_data_col_names[index]
+        except ValueError:
+            match_cols_dict[existing_db_column] = None
+
+
+    if request.method == "POST":
+        formDict = request.form.to_dict()
+        # print(f"- search_rincons POST -")
+        # print("formDict: ", formDict)
+
+        # NOTE: upload data to existing database
+        ### formDict (key) is existing databaes column name
+        # existing_names_list = [existing for existing, update in formDict.items() if update != 'true' ]
+        
+        # check for default values and remove from formDict
+        set_default_value_dict = {}
+        for key, value in formDict.items():
+            if key[:len("default_checkbox_")] == "default_checkbox_":
+                set_default_value_dict[value] = formDict.get(value)
+        
+
+        # Delete elements from dictionary
+        for key, value in set_default_value_dict.items():
+            del formDict[key]
+            checkbox_key = "default_checkbox_" + key
+            del formDict[checkbox_key]
+
+
+
+
+        print("- formDict adjusted -")
+        print(formDict)
+
+        existing_names_list = []
+        for key, value in formDict.items():
+            if value != 'true':
+                existing_names_list.append(key)
+            
+            
+        df_update = pd.DataFrame(columns=existing_names_list)
+
+        # value is the new data (aka the uploaded csv file column)
+        for exisiting, replacement in formDict.items():
+            if not replacement in ['true','']:
+                # print(replacement)
+                df_update[exisiting]=df[replacement].values
+
+        # Add in columns with default values
+        for column_name, default_value in set_default_value_dict.items():
+            if column_name == 'time_stamp_utc': 
+                df_update[column_name] = datetime.utcnow()
+            else:
+                df_update[column_name] = default_value
+
+        
+        # remove existing users from upload
+        # NOTE: There needs to be a user to upload data
+        if table_name == 'users':
+            print("--- Found users table ---")
+            existing_users = sess_users.query(Users).all()
+            list_of_emails_in_db = [i.email for i in existing_users]
+            for email in list_of_emails_in_db:
+                df_update.drop(df_update[df_update.email== email].index, inplace = True)
+                print(f"-- removeing {email} from upload dataset --")
+        
+
+            for index in range(1,len(df_update)+1):
+                df_update.loc[index, 'password'] = df_update.loc[index, 'password'].encode()
+                # print(" ****************** ")
+                # print(f"- encoded row for {df_update.loc[index, 'email']} -")
+                # print(" ****************** ")
+
+
+        df_update.to_sql(table_name, con=engine, if_exists='append', index=False)
+
+        flash(f"{table_name} update: successful!", "success")
+
+        # print("request.path: ", request.path)
+        # print("request.full_path: ", request.full_path)
+        # print("request.script_root: ", request.script_root)
+        # print("request.base_url: ", request.base_url)
+        # print("request.url: ", request.url)
+        # print("request.url_root: ", request.url_root)
+        # print("______")
+
+
+        # return redirect(request.url)
+        return redirect(url_for('admin.admin_db_upload'))
+
+
+    
+    return render_template('admin/upload_table.html', table_name=table_name, 
+        match_cols_dict = match_cols_dict,
+        existing_table_column_names=existing_table_column_names,
+        replacement_data_col_names = replacement_data_col_names)
+
+
+
+@bp_admin.route('/nrodrig1_admin', methods=["GET"])
+def nrodrig1_admin():
+    nrodrig1 = sess_users.query(Users).filter_by(email="nrodrig1@gmail.com").first()
+    if nrodrig1 != None:
+        nrodrig1.admin = True
+        sess.commit()
+        flash("nrodrig1@gmail updated to admin", "success")
+    return redirect(url_for('bp_main.home'))
 

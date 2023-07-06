@@ -2,47 +2,37 @@
 
 
 {% block main %}
-
+<div class="space_for_navbar_and_footer">
 <div class="admin_page" >
-    <div class="container">
-
-        <form method="POST" action="" enctype="multipart/form-data">
-
-            <div>
-                <h2>Users</h2>
-                {% for i,j in users_list.items() %}
-                <ul class="ul_no_bullets">
-                    {% if j=='add privilege' %}
-                    <li >{{ i +'(' + j +')'}}</li>
-
-                    {% else %}
-                    <li >{{ i }} <a class="remove-image"  href="{{ url_for('bp_admin.delete_user', email=i) }}" 
-                        style="display: inline;">&#215;</a></li>
-
-                    {% endif %}
-                </ul>
-                {% endfor %}
-            </div>
+    <div class="std_framing ">
 
 
-            <br/>
-            <div>
-                Add user: <input type="text" class="wider_input_login" name="add_user" >
-                <input type="checkbox" name="add_privilege" value="True"> Allow Add Privilege
-            </div>
+        <div class="download_db_tables_form">
 
-            <br/>
-            <button type="submit" class="btn btn-primary ml-3" name="confirm_selection" value=True>Confirm</button>
-        <br/>
-        <br/>
-        <i>
-
-        Note: This does not register a user or email it only allows an email to access the application. Once an email is
-         added to this list the email will be allowed to register through the normal process of clicking 'Register'.
-        </i>
         
-        </form>
+        Database Options
 
-    </div>
+
+        <!-- <div class="home_sub"> -->
+
+
+      
+          <div class="home_buttons">
+    
+            <a class="div_button home_register" href="{{ url_for('bp_admin.admin_db_download') }}">
+              Download
+            </a>
+            
+            <a class="div_button home_login" href="{{ url_for('bp_admin.admin_db_upload') }}">
+              Upload
+            </a>
+      
+          </div><!-- home_buttons -->
+    
+        <!-- </div> -->
+
+      </div><!-- download_db_tables_form -->
+      </div><!-- std_framing -->
   </div>
+</div>
 {% endblock %}

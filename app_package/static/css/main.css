@@ -10986,6 +10986,9 @@ textarea.form-control-lg {
     padding: 0 0 0 5px;
     margin: 0 0 0 0;
   }
+  .navbar_super .navbar_custom .nav_right nav ul .li_admin {
+    background-color: var(--bs-gray-500);
+  }
   .footer {
     padding: 1rem 2rem var(--nav-height) 3rem;
   }
@@ -11083,6 +11086,144 @@ textarea.form-control-lg {
 }
 .database_page .file_input_div {
   padding-left: 2rem;
+}
+
+/* Admin DB Page */
+.admin_page {
+  width: 90%;
+  padding: 3rem 0 0 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.admin_page .title {
+  width: 100%;
+}
+.admin_page .home_buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  width: 100%;
+}
+.admin_page .div_button {
+  padding: 1rem 0 1rem 0;
+  width: 100%;
+  border-radius: 3rem;
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+.admin_page .home_register {
+  background-color: var(--bs-primary);
+  border: solid var(--bs-primary);
+  border-width: 0.5rem;
+  color: var(--bs-gray-200);
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+.admin_page .home_login {
+  color: var(--bs-primary);
+  border: solid var(--bs-primary);
+  border-width: 0.5rem;
+  text-decoration: none;
+}
+.admin_page .rincon_admin_input_div {
+  display: flex;
+  justify-content: space-between;
+}
+.admin_page .btn_update_div {
+  display: flex;
+  justify-content: end;
+}
+
+/* Admin DB DOWNload Page */
+.admin_db_download_page {
+  width: 90%;
+  padding: 3rem 0 0 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.admin_db_download_page .title {
+  width: 100%;
+}
+.admin_db_download_page .admin_db_sub {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.admin_db_download_page .download_db_tables_form {
+  padding: 1rem;
+}
+.admin_db_download_page .ul_no_bullets {
+  list-style-type: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margins */
+}
+.admin_db_download_page .download_options {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1rem;
+  padding: 0 3rem;
+}
+
+/* Admin DB UPload Page */
+.admin_db_upload_table_page {
+  width: 90%;
+  padding: 3rem 0 0 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.admin_db_upload_table_page .title {
+  width: 100%;
+}
+.admin_db_upload_table_page .admin_db_sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  max-width: 50rem;
+  height: 100vh;
+}
+.admin_db_upload_table_page .section_div {
+  width: 100%;
+  padding: 1rem;
+}
+.admin_db_upload_table_page .section_div_sub {
+  width: 97%;
+  padding: 1rem;
+}
+.admin_db_upload_table_page .details {
+  padding: 1rem;
+}
+.admin_db_upload_table_page .download_db_tables_form {
+  padding: 1rem;
+}
+.admin_db_upload_table_page .download_db_tables_form .upload_input {
+  width: 100%;
+}
+.admin_db_upload_table_page .download_db_tables_form .missing {
+  background-color: var(--bs-warning);
+}
+.admin_db_upload_table_page .btn_div {
+  display: flex;
+  justify-content: end;
+}
+.admin_db_upload_table_page .ul_no_bullets {
+  list-style-type: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margins */
+}
+.admin_db_upload_table_page .white_bkground {
+  background-color: var(--bs-gray-100);
+  border-radius: 0.25rem;
+  padding: 0 0.25rem;
+}
+.admin_db_upload_table_page .input_div_for_new_data {
+  display: flex;
 }
 
 /* View Post */

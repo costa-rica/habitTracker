@@ -80,6 +80,9 @@ def create_app(config_for_flask = config):
     # config.DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS directory:
     if not os.path.exists(config_for_flask.DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS):
         os.makedirs(config_for_flask.DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS)
+    # config.DIR_DB_BACKUP directory:
+    if not os.path.exists(config_for_flask.DIR_DB_BACKUP):
+        os.makedirs(config_for_flask.DIR_DB_BACKUP)
         
     ############################################################################
     ## Build Sqlite database files

@@ -59,16 +59,17 @@
             <br>
   
             <!-- <li class=""><a class="nav-link" href="{{ url_for('bp_blog.index') }}">Blog</a></li> -->
+            {% if current_user.admin %}
+            <li class="li_admin"><a class="" href="{{ url_for('bp_admin.admin_page') }}">Admin</a></li>
+            {% endif %}
             {% if current_user.id %}
-            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_main.log') }}">Log</a></li>
-            <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_main.user_habits') }}">Habits</a></li>
+            <li class="nav-item "><a class="nav-link" href="{{ url_for('bp_main.log') }}">Log</a></li>
+            <li class="nav-item "><a class="nav-link" href="{{ url_for('bp_main.user_habits') }}">Habits</a></li>
             <!-- <li class="nav-item li_primary"><a class="nav-link" href="">Download</a></li> -->
             <li class="nav-item li_primary"><a class="nav-link" href="{{ url_for('bp_users.logout') }}">Logout</a></li>
-            
             {% endif %}<!-- if current_user.id -->
             {% if not current_user.is_authenticated %}
             <li class=""><a class="fit_text" href="{{ url_for('bp_users.login') }}">Login</a></li>
-
             {% endif %}
             
 

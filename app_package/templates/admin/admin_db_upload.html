@@ -1,0 +1,67 @@
+{% extends "_layout.html" %}
+{% block main %}
+
+<form method="POST" id="form_upload_db_step1" enctype=multipart/form-data></form>
+
+<div class="main">
+  <div class="admin_db_download_page">
+    <div class="title">
+      <h1>Upload files to database</h1>
+    </div>
+
+    <div class="admin_db_sub">
+
+      <div class="std_framing ">
+
+
+        <div class="download_db_tables_form">
+
+
+         
+
+
+          <div class="home_buttons">
+
+            Step 1: Select a csv file to upload<br>
+            <input type="file"  form="form_upload_db_step1"
+            accept=".csv" name="csv_table_upload" required>
+
+
+            <br><br>
+
+            Step 2: Select the table to upload that csv data to
+            <br>
+
+            
+              <input list="db_tables" name="existing_db_table_to_update"  placeholder="double click to see list" form="form_upload_db_step1" required/>
+              <datalist id="db_tables">
+                {% for table in db_table_list %}
+                <option value="{{ table }}">
+                  {% endfor %}
+              </datalist>
+
+
+
+
+
+            <div class="btn_div">
+              <button type="submit" name="upload_csv" value="true" class="btn btn-primary"
+                form="form_upload_db_step1">Next Step</button>
+            </div>
+
+
+
+
+          </div><!-- home_buttons -->
+
+        </div><!-- download_db_tables_form -->
+      </div><!-- std_framing -->
+    </div><!-- admin_db_sub -->
+
+
+
+  </div><!-- admin_db_page -->
+</div><!-- main -->
+
+
+{% endblock %}
