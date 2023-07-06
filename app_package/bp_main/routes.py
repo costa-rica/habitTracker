@@ -8,7 +8,8 @@ from flask_login import current_user
 from ht_models import dict_sess, dict_engine, text, dict_base, Users, \
     Habits, UserHabitAssociations,UserHabitDays
 from flask_login import login_required, login_user, logout_user, current_user
-from app_package.bp_main.utils import create_list_of_recorded_habits
+from app_package.bp_main.utils import create_list_of_recorded_habits, \
+    userHabitDayExists
 
 bp_main = Blueprint('bp_main', __name__)
 sess_users = dict_sess['sess_users']
@@ -59,6 +60,7 @@ def log():
     # user_habit_days = [i for i in sess_users.query(UserHabitDays).filter_by(user_id=current_user.id).all()]
     # UserHabitDays(id: 1, habit_id: 1, user_id: 1, date: 2023-07-05 00:00:00)
     user_habit_days = [(i.id, 
+                        i.habit_id, 
                         sess_users.query(Habits).filter_by(id=i.habit_id).first().habit_name, 
                         i.date.strftime("%Y-%m-%d")) for i in sess_users.query(
                         UserHabitDays).filter_by(user_id=current_user.id).all()]
@@ -72,22 +74,37 @@ def log():
             formDict = request.form.to_dict()
             print("formDict: ", formDict)
 
-            habit_id_list = create_list_of_recorded_habits(formDict)
+
+            if formDict.get('delete_habit'):
+                # print("FormDict: ", formDict.get('delete_habit'))
+                logger_bp_main.info(f"-- removing habit UserHabitDay Id: {formDict.get('delete_habit')} --")
+                sess_users.query(UserHabitDays).filter_by(id=formDict.get('delete_habit')).delete()
+                sess_users.commit()
+                return redirect(request.url)
+            
+            logger_bp_main.info(f"* Adding *")
+            form_habit_id_list = create_list_of_recorded_habits(formDict)
 
             date_str = formDict.get('date')
             date_datetime = datetime.strptime(date_str, '%Y-%m-%d')
 
-
+            # user_habits_list: [[habit_id, habit_name]]
             for habit in user_habits_list:
-                print("habit: ", habit[0], habit[1])
-                if habit[0] in habit_id_list:
-                    print("-- removing habit --")
-                    sess_users.query(UserHabitDays).filter_by(user_id=current_user.id, habit_id=habit[0]).delete()
-                    sess_users.commit()
-                else:
+                # print("habit: ", habit[0], habit[1])
+                # if user (has habit and its checked from the form) AND (no habit in that day)
+                print("habit[0] ", str(habit[0]))
+                print("form_habit_id_list ", form_habit_id_list)
+                user_habit_day_exists = userHabitDayExists(current_user.id, str(habit[0]), date_datetime)
+                print("not user_habit_day_exists ", not user_habit_day_exists)
+                if (str(habit[0]) in form_habit_id_list) and (not user_habit_day_exists) :
                     print("-- adding habit --")
                     new_log = UserHabitDays(user_id = current_user.id, habit_id= habit[0], date=date_datetime)
                     sess_users.add(new_log)
+                    sess_users.commit()
+
+                elif not (str(habit[0]) in form_habit_id_list):
+                    print("-- removing habit --")
+                    sess_users.query(UserHabitDays).filter_by(user_id=current_user.id, habit_id=habit[0], date=date_datetime).delete()
                     sess_users.commit()
             # for habit_id in habit_id_list:
 
@@ -97,6 +114,7 @@ def log():
 
             #     logger_bp_main.info(f"-- habit_id: {habit_id} added --")
             flash('added habit', 'success')
+            return redirect(request.url)
         
 
     return render_template('main/log.html', today_date = today_date, user_habits_list=user_habits_list,

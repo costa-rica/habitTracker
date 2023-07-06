@@ -10774,6 +10774,7 @@ textarea.form-control-lg {
   position: absolute;
   top: var(--nav-height);
   width: 100%;
+  z-index: 1;
 }
 .flash_custom_parent .alert_custom .close_right {
   float: right;

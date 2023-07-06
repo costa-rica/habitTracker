@@ -2,6 +2,7 @@
 {% block title %} Log Habit {% endblock %}
 {% block main %}
 <form method="POST" id="form_log" enctype=multipart/form-data></form>
+<form method="POST" id="form_delete_habit" enctype=multipart/form-data></form>
 
 <div class="space_for_navbar_and_footer">
 
@@ -25,8 +26,6 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <!-- <span>Read:</span>
-                <input type="checkbox" name="checkbox_read" form="form_log"/> -->
             </div>
         </div>
 
@@ -45,7 +44,6 @@
 
 
     </div><!-- log_page_sub std_framing -->
-
 
     <div class="log_page_sub_table std_framing flex_center">
 
@@ -75,13 +73,13 @@
                     {% for row in user_habit_days %}
                     <tr>
       
-                      <td>{{ row.1 }}</td>
                       <td>{{ row.2 }}</td>
+                      <td>{{ row.3 }}</td>
     
                       <td>
     
-                        <button type="submit" name="leave" value="{{ row.0 }}" class="btn btn-warning btn_custom01"
-                          form="form_rincon_membership">Leave</button>
+                        <button type="submit" name="delete_habit" value="{{ row.0 }}" class="btn btn-warning btn_custom01"
+                          form="form_delete_habit">Delete</button>
     
       
                       </td>
@@ -96,16 +94,9 @@
 
         </div><!-- search_and_table_super -->
 
-
-
-
     </div><!-- log_page_sub_table std_framing -->
 
-
 </div><!-- log_page flex_center -->
-
-
-
 
 
 </div>
@@ -113,42 +104,47 @@
 <script src="../static/customAndOldFiles/searchTable01.js"></script>
 
 <script>
-    window.onload = function() {
-        // When the page first loads
-        checkHabits();
-    
-        // When the date_selector value changes
-        document.getElementById('date_selector').addEventListener('change', function() {
-            checkHabits();
-        });
-    }
-    
-    function checkHabits() {
-        // Get the selected date
-        var selectedDate = new Date(document.getElementById('date_selector').value);
-        
-        // The selected date as a string in the format: YYYY-MM-DD
-        var selectedDateString = selectedDate.toISOString().split('T')[0];
-    
-        // Jinja2 variable user_habit_days should be rendered in this script
-        var user_habit_days = {{ user_habit_days|tojson }};
-        
-        // Loop through each item in the user_habit_days list
-        for (var i = 0; i < user_habit_days.length; i++) {
-            // Get the date from the tuple and convert it to a string in the format: YYYY-MM-DD
-            var habitDate = new Date(user_habit_days[i][2]).toISOString().split('T')[0];
-    
-            // Check if the selected date matches the habit date
-            if (selectedDateString === habitDate) {
-                // Check the corresponding checkbox
-                document.getElementById('checkbox_' + user_habit_days[i][0]).checked = true;
-            } else {
-                // Uncheck the corresponding checkbox
-                document.getElementById('checkbox_' + user_habit_days[i][0]).checked = false;
-            }
-        }
-    }
-    </script>
+  window.onload = function() {
+      // When the page first loads
+      checkHabits();
+  
+      // When the date_selector value changes
+      document.getElementById('date_selector').addEventListener('change', function() {
+          checkHabits();
+      });
+  }
+  
+  function checkHabits() {
+      // Get the selected date
+      //var selectedDate = new Date(document.getElementById('date_selector').value);
+      var selectedDate = document.getElementById('date_selector').value;
+      
+      // The selected date as a string in the format: YYYY-MM-DD
+      //var selectedDateString = selectedDate.toISOString().split('T')[0];
+  
+      // Jinja2 variable user_habit_days should be rendered in this script
+      var user_habit_days = {{ user_habit_days|tojson }};
+      console.log(user_habit_days);
+      // Loop through each item in the user_habit_days list
+      //for (var i = 0; i < user_habit_days.length; i++) {
+        for (let habit_day of user_habit_days) {
+          
+          // Get the date from the tuple and convert it to a string in the format: YYYY-MM-DD
+          //var habitDate = new Date(user_habit_days[i][2]).toISOString().split('T')[0];
+  
+          // Check if the selected date matches the habit date
+          //if (selectedDateString === habitDate) {
+            if (selectedDate == habit_day[3]) {
+              // Check the corresponding checkbox
+              document.getElementById('checkbox_' + habit_day[1]).checked = true;
+          } else {
+              // Uncheck the corresponding checkbox
+              document.getElementById('checkbox_' + habit_day[1]).checked = false;
+          }
+      }
+  }
+  </script>
+  
     
 
 
