@@ -11085,28 +11085,6 @@ textarea.form-control-lg {
   padding-left: 2rem;
 }
 
-/* Admin Page */
-.admin_page .hidden {
-  display: none;
-}
-.admin_page .habits_list .habit_list_item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.admin_page .habits_list button {
-  width: 2rem;
-  text-decoration: none;
-  padding: 0.3rem;
-  border-radius: 5rem;
-  background-color: var(--bs-gray-400);
-}
-.admin_page .habits_list button:hover {
-  color: orangered;
-  font-size: 1.5rem;
-  font-weight: 900;
-}
-
 /* View Post */
 .view_post_super {
   display: flex;
@@ -11607,7 +11585,7 @@ body {
 .log_page .button_div_right {
   display: flex;
   justify-content: end;
-  padding: 0 5rem 0 0;
+  width: 100%;
 }
 .log_page .log_page_sub_table {
   width: calc(100% - 0.5rem);
@@ -11618,17 +11596,60 @@ body {
   max-width: 50rem;
 }
 .log_page .search-container {
+  flex-wrap: wrap;
+}
+.log_page .search-container input {
   width: 100%;
 }
 .log_page .table_custom {
+  margin-top: 2rem;
   width: 100%;
+  border-collapse: collapse;
 }
-.log_page .table_custom tr {
+.log_page th {
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid black;
+}
+.log_page td:nth-child(1), .log_page td:nth-child(2) {
+  text-align: center;
+}
+.log_page td:nth-child(3) {
+  text-align: center;
+}
+.log_page .custom_delete_btn {
+  width: 2rem;
+  text-decoration: none;
+  padding: 0.3rem;
+  border-radius: 5rem;
+  background-color: var(--bs-gray-200);
+}
+.log_page .custom_delete_btn:hover {
+  color: orangered;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+/* User Habits Page */
+.user_habits_page .hidden {
+  display: none;
+}
+.user_habits_page .habits_list .habit_list_item {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
-.log_page .table_custom .heading_row {
-  border-bottom: 2px solid #000000;
+.user_habits_page .habits_list button {
+  width: 2rem;
+  text-decoration: none;
+  padding: 0.3rem;
+  border-radius: 5rem;
+  background-color: var(--bs-gray-400);
+}
+.user_habits_page .habits_list button:hover {
+  color: orangered;
+  font-size: 1.5rem;
+  font-weight: 900;
 }
 
 /* About */
@@ -11675,6 +11696,15 @@ section.about_main a:hover {
   }
   .home_page .home_row_four_contact {
     max-width: var(--website_max_width);
+  }
+  /* Log  Page */
+  .log_page .button_div_right {
+    padding: 0 5rem 0 0;
+  }
+  .log_page .search-container {
+    width: 100%;
+    gap: 2rem;
+    flex-wrap: nowrap;
   }
 }
 

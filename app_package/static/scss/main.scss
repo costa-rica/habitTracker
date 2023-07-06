@@ -38,10 +38,6 @@ body {
   justify-content: center;
 }
 
-// .main_wrap{
-//   flex-wrap: wrap;
-// }
-
 .std_framing {
   border: 1px solid var(--bs-gray-500);
   border-width: .5em;
@@ -238,18 +234,13 @@ body {
 
 /* Log  Page */
 .log_page{
-  // width: 95%;
-  // padding: 3rem 0 0 0;
   gap: 1rem;
 
   .log_page_sub{
-    // border-radius: 1.5em;
-    // padding: 3rem 0 3rem .0;
+
     width: calc(100% - .5rem);
     font-size: 1.5em;
-    // background-color: white;
-    // display:flex;
-    // justify-content: center;
+
   }
   .habits_list{
     list-style: none;
@@ -258,7 +249,9 @@ body {
   .button_div_right {
     display:flex;
     justify-content: end;
-    padding: 0 5rem 0 0;
+    // padding: 0 5rem 0 0;
+    // background-color: #20C997;
+    width:100%;
 }
   .log_page_sub_table{
     // display: flex;
@@ -273,25 +266,83 @@ body {
     // width: calc(100% - .5rem);
     // background-color: gold;
   }
-  .search-container{width:100%;}
   .search-container{
     // width:100%;
+    // gap: 2rem;
+    // justify-content: space-between;
+    // background-color: green;
+    flex-wrap: wrap;
+    input{width:100%;}
   }
-  .table_custom{
-    // background-color: #20C997;
-    width:100%;
-    
-    tr{
-      // width: 100%;
-      display: flex;justify-content: space-between;}
-    .heading_row{ 
-      // padding:.2rem 1rem;
-      border-bottom: 2px solid #000000;
-    }
-    // td{ padding: .1rem 1rem;}
+
+
+  .table_custom {
+    margin-top: 2rem;
+    width: 100%;
+    border-collapse: collapse;
   }
+
+  th {
+    text-align: center;
+    font-weight: bold;
+    // text-decoration: underline;
+    border-bottom: 1px solid black;
+  }
+
+  td:nth-child(1), td:nth-child(2) {
+    text-align: center;
+  }
+
+  td:nth-child(3) {
+    text-align: center;
+  }
+  .custom_delete_btn{
+    width: 2rem;
+    text-decoration:none;
+    // border: 1px solid var(--bs-primary);
+    // border-width: .;
+    padding: .3rem;
+    border-radius: 5rem;
+    background-color: var(--bs-gray-200);
+  }
+  .custom_delete_btn:hover{
+    // background-color: green;
+    color: orangered;
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+
 }
 
+/* User Habits Page */
+.user_habits_page{
+  .hidden {
+    display: none;
+}
+.habits_list{
+  .habit_list_item{
+    display: flex;
+    align-items: center;
+    gap:1rem;
+  }
+  button{
+    width: 2rem;
+    text-decoration:none;
+    // border: 1px solid var(--bs-primary);
+    // border-width: .;
+    padding: .3rem;
+    border-radius: 5rem;
+    background-color: var(--bs-gray-400);
+  }
+  button:hover{
+    // background-color: green;
+    color: orangered;
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+
+}
+}
 
 
 /* About */
@@ -351,5 +402,20 @@ section.about_main{
 
 
   }
-
+/* Log  Page */
+.log_page{
+  .button_div_right {
+    // display:flex;
+    // justify-content: end;
+    padding: 0 5rem 0 0;
+}
+  .search-container{
+    width:100%;
+    // max-width: 40rem;
+    gap: 2rem;
+    flex-wrap: nowrap;
+    // justify-content: space-between;
+    // background-color: green;
+  }
+}
 }

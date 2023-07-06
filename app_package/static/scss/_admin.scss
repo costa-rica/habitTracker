@@ -10,32 +10,3 @@
   }
 }
 
-/* Admin Page */
-.admin_page{
-  .hidden {
-    display: none;
-}
-.habits_list{
-  .habit_list_item{
-    display: flex;
-    align-items: center;
-    gap:1rem;
-  }
-  button{
-    width: 2rem;
-    text-decoration:none;
-    // border: 1px solid var(--bs-primary);
-    // border-width: .;
-    padding: .3rem;
-    border-radius: 5rem;
-    background-color: var(--bs-gray-400);
-  }
-  button:hover{
-    // background-color: green;
-    color: orangered;
-    font-size: 1.5rem;
-    font-weight: 900;
-  }
-
-}
-}

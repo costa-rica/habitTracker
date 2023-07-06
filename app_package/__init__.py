@@ -77,7 +77,10 @@ def create_app(config_for_flask = config):
     if not os.path.exists(config_for_flask.DIR_DB_AUX_BLOG_POSTS):
         os.makedirs(config_for_flask.DIR_DB_AUX_BLOG_POSTS)
 
-
+    # config.DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS directory:
+    if not os.path.exists(config_for_flask.DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS):
+        os.makedirs(config_for_flask.DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS)
+        
     ############################################################################
     ## Build Sqlite database files
     #Build DB_NAME_USERS

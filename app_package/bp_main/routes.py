@@ -1,5 +1,6 @@
 from flask import Blueprint
-from flask import render_template, request, flash, redirect
+from flask import render_template, request, flash, redirect, send_from_directory, \
+    current_app
 import os
 import logging
 from logging.handlers import RotatingFileHandler
@@ -9,10 +10,14 @@ from ht_models import dict_sess, dict_engine, text, dict_base, Users, \
     Habits, UserHabitAssociations,UserHabitDays
 from flask_login import login_required, login_user, logout_user, current_user
 from app_package.bp_main.utils import create_list_of_recorded_habits, \
-    userHabitDayExists
+    get_user_habit_day_exists, remove_table_name_from_df, create_user_habits_wb
+import pandas as pd
+
 
 bp_main = Blueprint('bp_main', __name__)
 sess_users = dict_sess['sess_users']
+engine_users = dict_engine['engine_users']
+Base_users = dict_base['Base_users']
 
 formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
 formatter_terminal = logging.Formatter('%(asctime)s:%(filename)s:%(name)s:%(message)s')
@@ -65,7 +70,7 @@ def log():
                         i.date.strftime("%Y-%m-%d")) for i in sess_users.query(
                         UserHabitDays).filter_by(user_id=current_user.id).all()]
     # (1, 'Read', '2023-07-05')
-    column_names = ['habit', 'date','delete']
+    column_names = ['Habit', 'Date','']
     print("user_habit_days: ", user_habit_days)
 
 
@@ -85,7 +90,9 @@ def log():
             logger_bp_main.info(f"* Adding *")
             form_habit_id_list = create_list_of_recorded_habits(formDict)
 
-            date_str = formDict.get('date')
+            date_str = formDict.get('habit_date')
+            print(f"What does habit_date look like: {date_str}")
+
             date_datetime = datetime.strptime(date_str, '%Y-%m-%d')
 
             # user_habits_list: [[habit_id, habit_name]]
@@ -94,7 +101,7 @@ def log():
                 # if user (has habit and its checked from the form) AND (no habit in that day)
                 print("habit[0] ", str(habit[0]))
                 print("form_habit_id_list ", form_habit_id_list)
-                user_habit_day_exists = userHabitDayExists(current_user.id, str(habit[0]), date_datetime)
+                user_habit_day_exists = get_user_habit_day_exists(current_user.id, str(habit[0]), date_datetime)
                 print("not user_habit_day_exists ", not user_habit_day_exists)
                 if (str(habit[0]) in form_habit_id_list) and (not user_habit_day_exists) :
                     print("-- adding habit --")
@@ -178,4 +185,36 @@ def user_habits():
     return render_template('main/user_habits.html', user_habits_list=user_habits_list,
                             non_user_habits=non_user_habits)
 
+@bp_main.route("/download_user_history", methods=["GET","POST"])
+@login_required
+def download_user_history():
+    logger_bp_main.info(f"-- in download_user_history route --")
+    metadata = Base_users.metadata
 
+    table_name = 'user_habit_days'
+    base_query = sess_users.query(metadata.tables[table_name])
+    df_uhd = pd.read_sql(text(str(base_query)), engine_users.connect())
+    df_uhd = remove_table_name_from_df(df_uhd, table_name)
+
+    table_name = 'habits'
+    base_query = sess_users.query(metadata.tables[table_name])
+    df_h = pd.read_sql(text(str(base_query)), engine_users.connect())
+    df_h = remove_table_name_from_df(df_h, table_name)
+
+    df_uhd = df_uhd[df_uhd.user_id==current_user.id]
+
+    # merge UserHabitDays with Habits on the appropriate id columns
+    df_merged = pd.merge(df_uhd, df_h, left_on='habit_id', right_on='id', suffixes=('_uhd', '_h'))
+
+    # Then, create a new dataframe with just the columns you're interested in
+    df_for_download = df_merged[['habit_name', 'date']]
+
+    filename = f"user{current_user.id}_habits_days.xlsx"
+    path_and_filename = os.path.join(current_app.config['DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS'], filename)
+
+    wb = create_user_habits_wb(df_for_download)
+    wb.save(filename=path_and_filename)
+
+    # user_df.to_excel(os.path.join(current_app.config['DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS'], filename))
+    return send_from_directory(os.path.join(current_app.config['DIR_DB_AUXILARY_USER_HABITS_DOWNLOADS']),filename, as_attachment=True)
+    

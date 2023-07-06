@@ -1,0 +1,37 @@
+<div class="modal-dialog delete_post_modal" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="modal-title">Are you sure you want to <b><u>delete</u></b>?</h5>
+      <button type="button" id="close_button1" class="btn btn-light">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-body" id="habitModalBody">
+        <!-- Habit name will go here -->
+      </div>
+      <!-- Text box -->
+      <input type="text" class="habit_tuple_input" id="habit_id" name="habit_id" form="form_delete_habit_day">
+      <input type="text" class="habit_tuple_input" id="habit_name" name="habit_name" form="form_delete_habit_day">
+      <input type="text" class="habit_tuple_input" id="habit_date" name="habit_date" form="form_delete_habit_day">
+
+
+      <!-- <a class="remove-image" href="{ url_for('bp_admin.delete_habit', id = habit.0 ) }"
+                            style="display: inline;">yes, delete </a> -->
+
+    </div>
+    <div class="modal-footer">
+      <div class="button_div_right">
+        <button type="submit" name="btn_delete_habit" value="true" class="btn btn-secondary" 
+          form="form_delete_habit_day">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $("#close_button1").click(function(){
+      $("#deleteModal").modal("hide");
+    });
+  });
+</script>
+
