@@ -11082,7 +11082,8 @@ textarea.form-control-lg {
 
 /* Databsase Page */
 .database_page .ul_no_bullets {
-  list-style-type: none; /* Remove bullets */
+  list-style-type: none;
+  /* Remove bullets */
 }
 .database_page .file_input_div {
   padding-left: 2rem;
@@ -11090,14 +11091,14 @@ textarea.form-control-lg {
 
 /* Admin DB Page */
 .admin_page {
-  width: 90%;
-  padding: 3rem 0 0 0;
+  padding: 2rem 0 0 0;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 1rem;
 }
-.admin_page .title {
-  width: 100%;
+.admin_page .database_options_div, .admin_page .users_table_div {
+  width: calc(100% - 0.5rem);
 }
 .admin_page .home_buttons {
   display: flex;
@@ -11157,9 +11158,12 @@ textarea.form-control-lg {
   padding: 1rem;
 }
 .admin_db_download_page .ul_no_bullets {
-  list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margins */
+  list-style-type: none;
+  /* Remove bullets */
+  padding: 0;
+  /* Remove padding */
+  margin: 0;
+  /* Remove margins */
 }
 .admin_db_download_page .download_options {
   width: 100%;
@@ -11213,9 +11217,12 @@ textarea.form-control-lg {
   justify-content: end;
 }
 .admin_db_upload_table_page .ul_no_bullets {
-  list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margins */
+  list-style-type: none;
+  /* Remove bullets */
+  padding: 0;
+  /* Remove padding */
+  margin: 0;
+  /* Remove margins */
 }
 .admin_db_upload_table_page .white_bkground {
   background-color: var(--bs-gray-100);
@@ -11226,6 +11233,13 @@ textarea.form-control-lg {
   display: flex;
 }
 
+@media screen and (min-width: 768px) {
+  /* Admin DB Page */
+  .admin_page .database_options_div, .admin_page .users_table_div {
+    width: calc(100% - 4rem);
+    max-width: 60rem;
+  }
+}
 /* View Post */
 .view_post_super {
   display: flex;

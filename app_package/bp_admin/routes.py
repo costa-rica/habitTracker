@@ -70,39 +70,10 @@ def before_request():
 @login_required
 def admin_page():
     logger_bp_admin.info(f"-- admin_page route --")
-    # users_list=[i.email for i in sess_users.query(Users).all()]
-    # habits_list=[(i.id, i.habit_name) for i in sess_users.query(Habits).all()]
-    
-    # with open(os.path.join(current_app.config['DIR_DB_FILES_UTILITY'],'added_users.txt')) as json_file:
-    #     get_users_dict=json.load(json_file)
-    #     json_file.close()
-    # get_users_list=list(get_users.keys())
-    # if request.method == 'POST':
-    #     formDict = request.form.to_dict()
-    #     print('formDict:::', formDict)
-    #     if formDict.get('new_habit'):
-    #         logger_bp_admin.info(f"-- new_habit detected --")
-    #         habit_name = formDict.get('new_habit')
-    #         new_habit = Habits(habit_name=formDict.get('new_habit'))
-    #         sess_users.add(new_habit)
-    #         sess_users.commit()
-    #         flash(f'{habit_name} has been added!', 'success')
-    #     if formDict.get('btn_delete_habit'):
-    #         logger_bp_admin.info(f"-- delete_habit detected --")
-    #         habit_id  = formDict.get('habit_id')
-    #         habit_name = formDict.get('habit_name')
-    #         habit_name = sess_users.query(Habits).filter_by(id=habit_id).first().habit_name
-    #         sess_users.query(Habits).filter_by(id=habit_id).delete()
-    #         sess_users.query(UserHabitDays).filter_by(habit_id= habit_id).delete()
-    #         sess_users.commit()
+    users_list=[(i.id, i.email) for i in sess_users.query(Users).all()]
 
-
-    #         flash(f'{habit_name} has been deleted!', 'success')
-    #     return redirect(request.url)
-    return render_template('admin/admin.html')
+    return render_template('admin/admin.html', users_list = users_list)
     # return render_template('admin/admin.html', users_list=get_users_dict)
-
-
 
 
 @bp_admin.route('/database_page', methods=["GET","POST"])
@@ -211,6 +182,12 @@ def admin_db_download():
     if not current_user.admin:
         return redirect(url_for('main.rincons'))
 
+    # Keep DB_ROOT dir clean, remove unneeded files/dir
+    if os.path.exists(current_app.config.get('DIR_DB_BACKUP')):
+        shutil.rmtree(current_app.config.get('DIR_DB_BACKUP'))
+    if os.path.exists(os.path.join(current_app.config['DB_ROOT'],'db_backup.zip')):
+        os.remove(os.path.join(current_app.config['DB_ROOT'],'db_backup.zip'))
+
     metadata = Base_users.metadata
     db_table_list = [table for table in metadata.tables.keys()]
 
@@ -222,10 +199,13 @@ def admin_db_download():
         # print(f"- search_rincons POST -")
         # print("formDict: ", formDict)
 
-        # # craete folder to save
-        # if not os.path.exists(os.path.join(os.environ.get('DIR_DB_BACKUP'),"db_backup")):
-        #     os.makedirs(os.path.join(os.environ.get('DIR_DB_BACKUP'),"db_backup"))
+        # config.DIR_DB_BACKUP directory:
+        if not os.path.exists(current_app.config.get('DIR_DB_BACKUP')):
+            os.makedirs(current_app.config.get('DIR_DB_BACKUP'))
 
+        extension_type = ".csv"
+        if formDict.get('download_pickle'):
+            extension_type = ".pkl"
 
         db_table_list = []
         for key, value in formDict.items():
@@ -249,29 +229,18 @@ def admin_db_download():
 
 
             db_tables_dict[table_name] = df
-            db_tables_dict[table_name].to_csv(os.path.join(current_app.config.get('DIR_DB_BACKUP'), f"{table_name}.csv"), index=False)
+            if extension_type == ".csv":
+                db_tables_dict[table_name].to_csv(os.path.join(current_app.config.get('DIR_DB_BACKUP'), f"{table_name}{extension_type}"), index=False)
+            else:
+                db_tables_dict[table_name].to_pickle(os.path.join(current_app.config.get('DIR_DB_BACKUP'), f"{table_name}{extension_type}"))
         
         shutil.make_archive(csv_dir_path, 'zip', csv_dir_path)
 
-        return redirect(url_for('bp_admin.download_db_tables_as_csv'))
+        # return redirect(url_for('bp_admin.download_db_tables_zip'))
+        return send_from_directory(os.path.join(current_app.config['DB_ROOT']),'db_backup.zip', as_attachment=True)
+        # return redirect(request.url)
     
     return render_template('admin/admin_db_download.html', db_table_list=db_table_list )
-
-@bp_admin.route("/download_db_tables_as_csv", methods=["GET","POST"])
-@login_required
-def download_db_tables_as_csv():
-    return send_from_directory(os.path.join(current_app.config['DB_ROOT']),'db_backup.zip', as_attachment=True)
-
-
-# @bp_admin.route("/download_db_workbook", methods=["GET","POST"])
-# @login_required
-# def download_db_workbook():
-#     # workbook_name=request.args.get('workbook_name')
-#     workbook_name = os.listdir(current_app.config['DIR_DB_FILES_DATABASE'])[0]
-#     print('file:::', os.path.join(current_app.root_path, 'static','files_database'),workbook_name)
-#     file_path = r'D:\OneDrive\Documents\professional\20210610kmDashboard2.0\fileShareApp\static\files_database\\'
-    
-#     return send_from_directory(os.path.join(current_app.config['DIR_DB_FILES_DATABASE']),workbook_name, as_attachment=True)
 
 
 @bp_admin.route('/admin_db_upload', methods = ['GET', 'POST'])
@@ -297,8 +266,8 @@ def admin_db_upload():
         # print("requestFiles: ", requestFiles)
 
         # craete folder to store upload files
-        if not os.path.exists(os.path.join(os.environ.get('DB_ROOT'),"db_upload")):
-            os.makedirs(os.path.join(os.environ.get('DB_ROOT'),"db_upload"))
+        if not os.path.exists(os.path.join(current_app.config.get('DB_ROOT'),"db_upload")):
+            os.makedirs(os.path.join(current_app.config.get('DB_ROOT'),"db_upload"))
         
 
         csv_file_for_table = request.files.get('csv_table_upload')
@@ -428,7 +397,7 @@ def upload_table(table_name):
                 # print(" ****************** ")
 
 
-        df_update.to_sql(table_name, con=engine, if_exists='append', index=False)
+        df_update.to_sql(table_name, con=engine_users, if_exists='append', index=False)
 
         flash(f"{table_name} update: successful!", "success")
 
@@ -442,7 +411,7 @@ def upload_table(table_name):
 
 
         # return redirect(request.url)
-        return redirect(url_for('admin.admin_db_upload'))
+        return redirect(url_for('bp_admin.admin_db_upload'))
 
 
     
@@ -458,7 +427,7 @@ def nrodrig1_admin():
     nrodrig1 = sess_users.query(Users).filter_by(email="nrodrig1@gmail.com").first()
     if nrodrig1 != None:
         nrodrig1.admin = True
-        sess.commit()
+        sess_users.commit()
         flash("nrodrig1@gmail updated to admin", "success")
     return redirect(url_for('bp_main.home'))
 

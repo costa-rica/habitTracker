@@ -3,36 +3,66 @@
 
 {% block main %}
 <div class="space_for_navbar_and_footer">
-<div class="admin_page" >
-    <div class="std_framing ">
+    <div class="admin_page">
+        <div class="std_framing database_options_div">
+            <div class="download_db_tables_form">
+                <h3>Database Options</h3>
+                <div class="home_buttons">
+                    <a class="div_button home_register" href="{{ url_for('bp_admin.admin_db_download') }}">
+                        Download
+                    </a>
+                    <a class="div_button home_login" href="{{ url_for('bp_admin.admin_db_upload') }}">
+                        Upload
+                    </a>
+                </div><!-- home_buttons -->
+            </div><!-- download_db_tables_form -->
+        </div><!-- std_framing -->
 
-
-        <div class="download_db_tables_form">
 
         
-        Database Options
+        <div class="std_framing users_table_div">
+          <h3>Users Table</h3>
+  
+          <div class="search-container">
+            <input type="text" id="myInput" onkeyup="searchTable()" placeholder="Search your users">
+          </div><!-- search-container -->
+  
+          <div class="table_div">
+            <table id="myTable" class="display table nowrap responsive">
+              <thead>
+                
+                <tr>
+  
+                  <th>User ID</th>
+                  <th>User Email</th>
+                  <!-- <th>Rincon Status (True = Admin)</th> -->
+  
+                </tr>
+        
+              </thead>
+              <tbody>
+                {% for user in users_list %}
+                <tr>
+                  <td>{{ user.0 }}</td>
+                  <td>{{ user.1 }}</td>
+
+                </tr>
+                {% endfor %}
+              </tbody>
+        
+            </table>
+          </div><!-- table_div -->
+
+  
+        </div><!-- std_framing -->
+  
 
 
-        <!-- <div class="home_sub"> -->
 
 
-      
-          <div class="home_buttons">
-    
-            <a class="div_button home_register" href="{{ url_for('bp_admin.admin_db_download') }}">
-              Download
-            </a>
-            
-            <a class="div_button home_login" href="{{ url_for('bp_admin.admin_db_upload') }}">
-              Upload
-            </a>
-      
-          </div><!-- home_buttons -->
-    
-        <!-- </div> -->
 
-      </div><!-- download_db_tables_form -->
-      </div><!-- std_framing -->
-  </div>
+    </div><!-- admin_page -->
 </div>
+
+<script src="../static/customAndOldFiles/searchTable.js"></script>
 {% endblock %}

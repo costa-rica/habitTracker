@@ -1,27 +1,32 @@
 /* Databsase Page */
-.database_page{
+.database_page {
+
   // background-color: pink;
-  .ul_no_bullets{
-    list-style-type: none; /* Remove bullets */
+  .ul_no_bullets {
+    list-style-type: none;
+    /* Remove bullets */
 
   }
-  .file_input_div{
-    padding-left: 2rem;// same as bullets padding
+
+  .file_input_div {
+    padding-left: 2rem; // same as bullets padding
   }
 }
 
 
 /* Admin DB Page */
 .admin_page {
-  width: 90%;
-  padding: 3rem 0 0 0;
+  // width: 90%;
+  padding: 2rem 0 0 0;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 1rem;
 
-  .title {
-    width: 100%;
+  .database_options_div, .users_table_div {
+    width: calc(100% - .5rem);
   }
+
   .home_buttons {
     display: flex;
     justify-content: center;
@@ -57,12 +62,13 @@
 
   }
 
-  .rincon_admin_input_div{
+  .rincon_admin_input_div {
     display: flex;
     justify-content: space-between;
 
   }
-  .btn_update_div{
+
+  .btn_update_div {
     display: flex;
     justify-content: end;
   }
@@ -88,15 +94,21 @@
     justify-content: center;
     flex-wrap: wrap;
   }
-  .download_db_tables_form{padding:1rem;}
 
-  .ul_no_bullets {
-    list-style-type: none; /* Remove bullets */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margins */
+  .download_db_tables_form {
+    padding: 1rem;
   }
 
-  .download_options{
+  .ul_no_bullets {
+    list-style-type: none;
+    /* Remove bullets */
+    padding: 0;
+    /* Remove padding */
+    margin: 0;
+    /* Remove margins */
+  }
+
+  .download_options {
     width: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -130,43 +142,68 @@
     max-width: 50rem;
     height: 100vh;
   }
+
   .section_div {
     width: 100%;
-    padding:1rem;
-  }
-  .section_div_sub {
-    width: 97%;
-    padding:1rem;
-  }
-
-  .details{
     padding: 1rem;
   }
 
-  .download_db_tables_form{
-    padding:1rem;
-
-    .upload_input{width:100%;}
-    .missing{background-color: var(--bs-warning);}
+  .section_div_sub {
+    width: 97%;
+    padding: 1rem;
   }
-  .btn_div{
+
+  .details {
+    padding: 1rem;
+  }
+
+  .download_db_tables_form {
+    padding: 1rem;
+
+    .upload_input {
+      width: 100%;
+    }
+
+    .missing {
+      background-color: var(--bs-warning);
+    }
+  }
+
+  .btn_div {
     display: flex;
     justify-content: end;
   }
+
   .ul_no_bullets {
-    list-style-type: none; /* Remove bullets */
-    padding: 0; /* Remove padding */
-    margin: 0; /* Remove margins */
-  }
-  .white_bkground{
-    background-color: var(--bs-gray-100);
-    border-radius: .25rem;
-    padding:0 .25rem;
+    list-style-type: none;
+    /* Remove bullets */
+    padding: 0;
+    /* Remove padding */
+    margin: 0;
+    /* Remove margins */
   }
 
-  .input_div_for_new_data{
+  .white_bkground {
+    background-color: var(--bs-gray-100);
+    border-radius: .25rem;
+    padding: 0 .25rem;
+  }
+
+  .input_div_for_new_data {
     display: flex;
   }
 }
 
 
+@media screen and (min-width: 768px) {
+
+  /* Admin DB Page */
+  .admin_page {
+    .database_options_div, .users_table_div {
+      width: calc(100% - 4rem);
+      max-width: 60rem;
+    }
+
+
+  }
+}
