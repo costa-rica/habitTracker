@@ -11613,9 +11613,13 @@ body {
 }
 .home_page .img_div {
   padding: 1rem 0;
+  width: 100%;
 }
 .home_page .img_div img {
   border-radius: 1rem;
+  width: 100%;
+  max-width: 50rem;
+  height: auto;
 }
 
 /* Log  Page */

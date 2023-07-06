@@ -78,11 +78,16 @@ body {
 
 .description_and_image_sub{
   width:calc(100% - .5rem);
+  // background-color: aqua;
 }
 .img_div{
 padding: 1rem 0;
+width:100%;
 img{
   border-radius: 1rem;
+  width:100%;
+  max-width: 50rem;
+  height:auto;
 }
 }
 }
@@ -216,7 +221,9 @@ section.about_main{
       width:calc(100% - 5rem);
     }
     .img_div{
-      width:100%
+      // background-color: #20C997;
+      width:100%;
+      
     }
 
   }

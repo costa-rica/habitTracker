@@ -222,10 +222,6 @@ def download_user_history():
 # Custom static data
 @bp_main.route('/<db_root_dir_name>/<image_filename>')
 def custom_static(db_root_dir_name, image_filename):
-    print("**** custom_static **8")
-
-    print(db_root_dir_name)
-    print(image_filename)
     
     return send_from_directory(os.path.join(current_app.config.get('DB_ROOT'), 'auxilary', \
         db_root_dir_name), image_filename)
