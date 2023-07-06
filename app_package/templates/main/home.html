@@ -1,10 +1,35 @@
 {% extends "_layout.html" %}
 {% block main %}
 
-<div class="space_for_navbar_and_footer">
-    <h1>Home</h1>
+<div class="space_for_navbar_and_footer flex_center">
+    <div class="home_page ">
+        <div class="title hundred_flex">
+            <h1>Habit Tracker</h1>
+        </div>
+        
+        
+        <div class="description_and_image  flex_center">
+            <div class="description_and_image_sub">
+                <div class="description_div" >
+                    This application was inspired by a variety of books on habits. The latest of which <u>Power of Habit Book Summary</u> by Charles Duhigg
+                    drove home the point necessary to have a <i>good</i> habit: cue, routine, reward. So often I've missed the reward.
+                    Without a reward you're just using self control. Self control is not a good long term strategy.
+                    <br>
+                    <br>
+                    Unfortunatly, this app does nothing for a reward. But at least you can track and download so you can play with your statistics.
+                </div>
+                <div class="img_div hundred_flex flex_center">
+                    <img src="{{ url_for('bp_main.custom_static', db_root_dir_name='images_people', image_filename='powerOfHabitDiagram.jpg') }}">
+                </div>
+                
+            
+            </div>
 
-    <h2>Flask Started Updated June 30, 2023</h2>
+        </div>
+
+    
+    </div>
+
 </div>
 
 
